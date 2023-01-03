@@ -1,0 +1,38 @@
+services:
+    nginx:
+        build: ./nginx/
+        container_name: nginx-container
+        ports:
+            - 80:80
+        links:
+            - php
+        volumes:
+            - public:/var/www/html
+
+    php:
+        build: ./php/
+        container_name: php-container
+        expose:
+            - 9000
+        links:
+            - mariadb
+        volumes:
+            - public:/var/www/html
+    
+    mariadb:
+        image: mariadb:latest
+        container_name: mariadb-container
+        volumes:
+            - public-mariadb:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: secret  
+            MYSQL_DATABASE: mydb  
+            MYSQL_USER: myuser  
+            MYSQL_PASSWORD: password  
+        
+
+volumes:
+    public:
+        external: true
+    public-mariadb:
+        external: true
